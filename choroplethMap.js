@@ -1,4 +1,3 @@
-// Plot constants
 const WIDTH = 1400;
 const HEIGHT = 800;
 
@@ -20,7 +19,6 @@ const monthNames = [
 ];
 
 function initChart(canvasElement) {
-  // Visualization canvas
   svg = d3
     .select(canvasElement)
     .append("svg")
@@ -29,7 +27,6 @@ function initChart(canvasElement) {
 
   g = svg.append("g");
 
-  // Labels
   title = g
     .append("text")
     .attr("class", "x-label")
@@ -38,7 +35,6 @@ function initChart(canvasElement) {
     .attr("font-size", "20px")
     .attr("text-anchor", "middle");
 
-  // Map and projection
   path = d3.geoPath();
   projection = d3
     .geoEqualEarth()
@@ -51,7 +47,6 @@ function initChart(canvasElement) {
     .domain([-30, 0, 35])
     .range(["#1788de", "#3C81B7", "#dc2f02"]);
 
-  // Legend
   const legend = g
     .append("defs")
     .append("svg:linearGradient")
@@ -90,7 +85,6 @@ function initChart(canvasElement) {
     .attr("transform", "translate(10,200)")
     .call(yAxis);
 
-  // Tooltip placeholder
   tooltip = d3.select(".tooltip");
 }
 
@@ -99,30 +93,23 @@ function updateChart(topo, data, month) {
   const currentYear = data.values().next().value[0].Year;
   title.text(`${monthNames[month]}, ${currentYear}`);
 
-  // Draw map
-  // Join
   const choroMap = g.selectAll("path").data(topo.features);
 
-  // Exit
   choroMap.exit().remove();
 
-  // Update
   choroMap
     .enter()
     .append("path")
     .merge(choroMap)
     .attr("class", "Country")
     .transition(trans)
-    // draw each country
     .attr("d", path.projection(projection))
-    // set the color of each country
     .attr("fill", function (d) {
       d.total = data.get(d.properties["iso_a3"]);
 
       return d.total ? colorScale(d.total[month].Temperature) : 30;
     });
 
-  // Interactivity
   choroMap
     .on("pointermove", function (event, d) {
       hovered = true;
@@ -148,13 +135,10 @@ function updateChart(topo, data, month) {
     })
     .on("pointerleave", function (event) {
       hovered = false;
-      // Country highlighting
       d3.selectAll(".Country").transition().duration(50).style("opacity", 1);
       d3.select(this).transition().duration(50).style("stroke", "none");
-      // Tooltip
       tooltip.transition().duration(100).style("opacity", 0);
     });
-  // Update tooltip data
   if (hovered) {
     tipData = tipCountry
       ? data.get(tipCountry)[month]

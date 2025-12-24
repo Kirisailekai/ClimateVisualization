@@ -1,4 +1,3 @@
-// Plot constants
 const MARGIN = {LEFT: 100, RIGHT: 20, TOP: 20, BOTTOM: 100};
 const WIDTH = 700 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM;
@@ -16,7 +15,6 @@ let svg,
   gradient;
 
 function initChart(canvasElement) {
-  // Visualization canvas
   svg = d3
     .select(canvasElement)
     .append("svg")
@@ -28,7 +26,6 @@ function initChart(canvasElement) {
     .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
   g.append("path").attr("class", "plot");
 
-  // Labels
   xLabel = g
     .append("text")
     .attr("class", "x-label")
@@ -47,7 +44,6 @@ function initChart(canvasElement) {
     .attr("transform", "rotate(-90)")
     .text("Temperature (℃)");
 
-  // Scales
   const monthNames = [
     "Jan",
     "Feb",
@@ -95,7 +91,6 @@ function initChart(canvasElement) {
       return d.color;
     });
 
-  // Axes initialization
   xAxisGroup = g
     .append("g")
     .attr("class", "x axis")
@@ -103,7 +98,6 @@ function initChart(canvasElement) {
 
   yAxisGroup = g.append("g").attr("class", "y axis");
 
-  // Add x axis
   const xAxisCall = d3
     .axisBottom(x)
     .ticks(d3.timeMonth, 1)
@@ -115,10 +109,8 @@ function updateChart(data) {
   const trans = d3.transition().duration(400);
 
   xLabel.text(`${data[0].Country}, ${data[0].Year}`);
-  // Add domains
   y.domain([d3.min(data, (d) => Number(d.Temperature)) < 0 ? -30 : 0, 35]);
 
-  // Line and area generator
   let curve = d3.curveMonotoneX;
   const line = d3
     .line()
@@ -133,7 +125,6 @@ function updateChart(data) {
     .y0(y(0))
     .y1((d) => y(d.Temperature));
 
-  // Add y axis
   const yAxisCall = d3.axisLeft(y);
   yAxisGroup.call(yAxisCall);
 
@@ -143,7 +134,6 @@ function updateChart(data) {
 
   linePath.exit().remove();
 
-  // Add line and area
   linePath
     .merge(linePath)
     .transition(trans)

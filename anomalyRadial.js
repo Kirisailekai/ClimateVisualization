@@ -1,4 +1,3 @@
-// Plot constants
 const MARGIN = {LEFT: 0, RIGHT: 0, TOP: 0, BOTTOM: 30};
 const WIDTH = 500 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM;
@@ -18,13 +17,11 @@ let svg,
 
 let currYear = 1901;
 
-// Domain data
-const domLow = -1.5, //-15, low end of data
-  domHigh = 1.25, //30, high end of data
-  axisTicks = [-1, 0, 1]; //[-20,-10,0,10,20,30];  [-2,-1,0,1,2,3];  [-1.5,-0.5,0.5,1.5];
+const domLow = -1.5,
+  domHigh = 1.25, 
+  axisTicks = [-1, 0, 1]; 
 
 function initChart(canvasElement) {
-  // Visualization canvas
   svg = d3
     .select(canvasElement)
     .append("svg")
@@ -38,13 +35,11 @@ function initChart(canvasElement) {
       "translate(" + WIDTH / 2 + "," + (HEIGHT / 2 + 20) + ")"
     );
 
-  //Base the color scale on average temperature extremes
   colorScale = d3
     .scaleLinear()
     .domain([domLow, (domLow + domHigh) / 2, domHigh])
     .range(["#1788de", "#ffff8c", "#CE241C"]);
 
-  //Scale for the heights of the bar, not starting at zero to give the bars an initial offset outward
   distScale = d3
     .scaleLinear()
     .range([INNERRADIUS, OUTERRADIUS])
@@ -53,10 +48,8 @@ function initChart(canvasElement) {
   radialScale = d3
     .scaleLinear()
     .range([0, Math.PI * 2])
-    .domain([1, 12]); // for 12 months
+    .domain([1, 12]); 
 
-  // Title
-  //Append title to the top
   title = g
     .append("g")
     .attr("class", "title")
@@ -65,21 +58,17 @@ function initChart(canvasElement) {
     .attr("text-anchor", "middle")
     .text("World Temperature Anomaly");
 
-  // Add axes
-  //Wrapper for the bars and to position it downward
   barWrapper = svg
     .append("g")
     .attr("transform", "translate(" + WIDTH / 2 + "," + HEIGHT / 2 + ")");
 
   pathWrapper = barWrapper.append("g").attr("id", "pathWrapper");
 
-  //Draw gridlines below the bars
   const axes = barWrapper
     .selectAll(".gridCircles")
     .data(axisTicks)
     .enter()
     .append("g");
-  //Draw the circles
   axes
     .append("circle")
     .attr("fill", "none")
@@ -89,7 +78,6 @@ function initChart(canvasElement) {
     .attr("r", function (d) {
       return distScale(d);
     });
-  //Draw the axis labels
   axes
     .append("text")
     .attr("class", "axisText")
@@ -101,7 +89,6 @@ function initChart(canvasElement) {
       return d + "°C";
     });
 
-  //Add January for reference
   barWrapper
     .append("text")
     .attr("class", "january")
@@ -109,18 +96,16 @@ function initChart(canvasElement) {
     .attr("y", -OUTERRADIUS)
     .attr("dy", "0.9em")
     .text("January");
-  //Add a line to split the year
   barWrapper
     .append("line")
     .attr("class", "yearLine")
     .attr("stroke", "black")
     .attr("opacity", 0.5)
     .attr("x1", 0)
-    .attr("y1", -INNERRADIUS * 1.8) //.65
+    .attr("y1", -INNERRADIUS * 1.8) 
     .attr("x2", 0)
     .attr("y2", -OUTERRADIUS * 1.1);
 
-  //Add year in center
   yearText = barWrapper
     .append("text")
     .attr("class", "yearText")
@@ -151,7 +136,6 @@ function updateChart(data, nextYear) {
   } else if (nextYear > currYear) {
     for (let year = currYear; year < nextYear; year++) {
       const yearData = data.get(String(year));
-      //Create path using line function
       const path = pathWrapper
             .append("path")
             .attr("class", "line")

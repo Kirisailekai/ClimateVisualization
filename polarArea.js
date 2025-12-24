@@ -1,4 +1,3 @@
-// Plot constants
 const MARGIN = {LEFT: 10, RIGHT: 10, TOP: 10, BOTTOM: 10};
 const WIDTH = 500 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT = 500 - MARGIN.TOP - MARGIN.BOTTOM;
@@ -35,7 +34,6 @@ const monthNames = [
 ];
 
 function initChart(canvasElement) {
-  // Visualization canvas
   svg = d3
     .select(canvasElement)
     .append("svg")
@@ -49,7 +47,6 @@ function initChart(canvasElement) {
       "translate(" + WIDTH / 2 + "," + (HEIGHT / 2 + 20) + ")"
     );
 
-  // Scales
   x = d3
     .scaleBand()
     .range([0, 2 * Math.PI])
@@ -57,14 +54,11 @@ function initChart(canvasElement) {
     .domain(monthNames);
   y = d3.scaleLinear().range([INNERRADIUS, OUTERRADIUS]).domain([-40, 35]);
 
-  // Color scaleBand
   colorScale = d3
     .scaleSqrt()
     .domain([-30, 0, 35])
     .range(["#1788de", "#3C81B7", "#CE241C"]);
 
-  // Axes initialization
-  // Y axis
   yAxisGroup = g.append("g").attr("class", "y axis");
 
   const yTicks = yAxisGroup.selectAll("g").data(y.ticks(6)).enter().append("g");
@@ -95,7 +89,6 @@ function initChart(canvasElement) {
       return y(y.domain()[0]);
     });
 
-  // X axis
   xAxisGroup = g.append("g").attr("class", "x axis");
 
   let xTicks = xAxisGroup
@@ -143,7 +136,6 @@ function initChart(canvasElement) {
     .attr("text-anchor", "middle")
     .attr("opacity", 0.6);
 
-  // Tooltip placeholder
   tooltip = d3.select(".tooltip");
 }
 
@@ -158,8 +150,6 @@ function updateChart(data) {
 
   bars.exit().remove();
 
-  // Add bars
-  // Join
   bars
     .enter()
     .append("path")
@@ -191,7 +181,6 @@ function updateChart(data) {
       hovered = false;
       d3.selectAll(".Bar").transition().duration(50).style("opacity", 1);
       d3.select(this).transition().duration(50).style("stroke", "none");
-      // Tooltip
       tooltip.transition().duration(100).style("opacity", 0);
     })
     .transition(trans)
@@ -200,7 +189,7 @@ function updateChart(data) {
     .attr(
       "d",
       d3
-        .arc() // imagine your doing a part of a donut plot
+        .arc() 
         .innerRadius(INNERRADIUS)
         .outerRadius(function (d) {
           return y(d.Temperature);
@@ -214,7 +203,6 @@ function updateChart(data) {
         .padAngle(0.08)
         .padRadius(INNERRADIUS)
     );
-  // Update tooltip data
   if (hovered) {
     hovMonth = monthNames.findIndex((month) => month == tipMonth);
     tipData =
