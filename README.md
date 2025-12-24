@@ -18,11 +18,3 @@ Data Sources:
 HadCRUT4.csv; source: Met Office Hadley Centre & Climatic Research Unit (University of East Anglia); data: global monthly temperature anomalies; period: 1901–2020
 
 temp-1901-2020-all.csv; source: Berkeley Earth; data: monthly average temperatures by country; period: 1901–2020; includes country names
-
-📜 License
-
-MIT License
-
-🎓 Purpose
-
-Educational project demonstrating data visualization with D3.js and real climate datasets.
